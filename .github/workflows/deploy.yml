@@ -2,32 +2,31 @@ name: Deploy to VPS
 
 on:
   push:
-    branches: [ main ]  # or "master"
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: Clean node_modules and package-lock
+      - name: Clean and install dependencies
         run: |
           rm -rf node_modules package-lock.json
+          npm install
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build Project
+      - name: Build the project
         run: npm run build
 
-      - name: Deploy to VPS via SSH
+      - name: Upload build to VPS
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -35,3 +34,12 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           source: "dist/"
           target: "/var/www/fitflex.techscaleups.in/"
+
+      - name: Restart Nginx (Optional)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            sudo systemctl restart nginx
