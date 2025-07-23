@@ -102,7 +102,7 @@ const FilterSidebar = ({
           ))}
 
           {/* Price Filter */}
-          <h5 className="mt-4 mb-3" style={{ color: '#00C18C' }}>Price Range</h5>
+          <h5 className="mt-4 mb-3" style={{ color: '#00C18C' }}>Price Rang</h5>
           <div className="mb-2">
             <label className="form-label">Min Price (₹)</label>
             <input
