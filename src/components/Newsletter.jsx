@@ -16,7 +16,7 @@ const Newsletter = () => {
             <button
               type="submit"
               className="btn btn-success border-0 rounded-end px-4 fw-semibold"
-              style={{ backgroundColor: '#40f840', color: '#ffff' }}
+              style={{ backgroundColor: '#40f840', color: '#fafafa' }}
             >
               Subscribe
             </button>
