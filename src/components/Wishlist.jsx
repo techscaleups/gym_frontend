@@ -14,7 +14,7 @@ const Wishlist = () => {
     const storedUserId = localStorage.getItem('userId');
     if (!storedUserId) {
       alert('User not logged in!');
-      navigate('/login'); // Redirect to login page
+      navigate('/'); // Redirect to login page
       return;
     }
     setUserId(storedUserId);

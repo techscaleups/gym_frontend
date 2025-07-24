@@ -120,7 +120,8 @@ const CheckoutPage = () => {
       }
 
       try {
-        const razorpayOrder = await createRazorpayOrder(summary.total * 100);
+        const amountInPaise = Math.round(summary.total * 100); // ✅ Fixed conversion
+        const razorpayOrder = await createRazorpayOrder(amountInPaise);
 
         const options = {
           key: 'rzp_live_MmV8shPATEBEeh',
@@ -148,7 +149,7 @@ const CheckoutPage = () => {
                 paymentId: response.razorpay_payment_id,
               };
 
-             const result = await axios.post(`${API_BASE}/orders/create`, finalOrder);
+              const result = await axios.post(`${API_BASE}/orders/create`, finalOrder);
               if (result.data.success) {
                 navigate('/orders', { state: { orderId: result.data.orderId } });
               } else {
