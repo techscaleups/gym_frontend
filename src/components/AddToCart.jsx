@@ -171,7 +171,7 @@ const Cart = () => {
                       src={
                         product.images?.[0]?.startsWith('http')
                           ? product.images[0]
-                          : `http://localhost:3001${product.images?.[0]}`
+                          : `https://techscaleups.in/gym_backend/${product.images?.[0]}`
                       }
                       alt={product.name || 'Product'}
                       className="img-fluid rounded"

@@ -3,6 +3,7 @@ import axios from 'axios';
 import FilterSidebar from './FilterSidebar/FilterSidebar';
 import { useSearchParams, Link } from 'react-router-dom';
 import { API_BASE } from '../constants/config';
+export const API_image = "https://techscaleups.in/gym_backend";
 
 const ProductsList = () => {
   const [products, setProducts] = useState([]);
@@ -95,7 +96,7 @@ const ProductsList = () => {
                         product.images?.length > 0
                           ? product.images[0].startsWith('http')
                             ? product.images[0]
-                            : `${API_BASE}${product.images[0]}`
+                            : `${API_image}${product.images[0]}`
                           : '/placeholder.jpg'
                       }
                       alt={product.name || 'Product Image'}

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_BASE } from '../constants/config';
+export const API_image = "https://techscaleups.in/gym_backend";
+
 
 const HotPicks = () => {
   const [hotPicks, setHotPicks] = useState([]);
@@ -26,7 +28,7 @@ const HotPicks = () => {
                 <img
                   src={
                     product.images && product.images.length > 0
-                      ? `${API_BASE}${product.images[0]}`
+                      ? `${API_image}${product.images[0]}`
                       : '/placeholder.jpg'
                   }
                   alt={product.name}

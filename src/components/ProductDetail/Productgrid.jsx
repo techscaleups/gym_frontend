@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { API_BASE } from '../../constants/config';
+import { API_image } from '../ProductsList';
 
 const Productgrid = () => {
   const [products, setProducts] = useState([]);
@@ -83,7 +84,7 @@ const Productgrid = () => {
                 <img
                   src={
                     product.images?.length > 0
-                      ? `${API_BASE}${product.images[0]}`
+                      ? `${API_image}${product.images[0]}`
                       : '/placeholder.jpg'
                   }
                   alt={product.name}

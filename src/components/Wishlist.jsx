@@ -82,12 +82,14 @@ const Wishlist = () => {
               <Row className="align-items-center">
                 <Col xs={2}>
                   <Image
-                    src={item.product?.image ? `http://localhost:3001${item.product.image}` : '/placeholder.jpg'}
+                    src={item.product?.image ? `https://techscaleups.in/gym_backend/${item.product.image}` : '/placeholder.jpg'}
                     alt={item.product?.name || 'No Image'}
                     fluid
                     rounded
+                    style={{ height: '200px', objectFit: 'cover' }}  // Set your desired height here
                     onError={(e) => { e.target.src = '/placeholder.jpg'; }}
                   />
+
 
                 </Col>
                 <Col xs={6}>

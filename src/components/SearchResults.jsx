@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
 import { FaHeart, FaStar } from 'react-icons/fa';
 import { API_BASE } from '../constants/config';
+export const API_image = "https://techscaleups.in/gym_backend";
 
 const SearchResults = () => {
   const location = useLocation();
@@ -88,7 +89,7 @@ const SearchResults = () => {
                   variant="top"
                   src={
                     product.images?.[0]
-                      ? `${API_BASE}${product.images[0]}`
+                      ? `${API_image}${product.images[0]}`
                       : 'https://via.placeholder.com/300x200?text=No+Image'
                   }
                   alt={product.name}

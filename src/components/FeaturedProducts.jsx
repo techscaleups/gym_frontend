@@ -6,6 +6,8 @@ import 'swiper/css/free-mode';
 import { FreeMode } from 'swiper/modules';
 import { Link } from 'react-router-dom';
 import { API_BASE } from '../constants/config';
+export const API_image = "https://techscaleups.in/gym_backend";
+
 
 const FeaturedProducts = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -46,7 +48,7 @@ const FeaturedProducts = () => {
                   <img
                     src={
                       product.images && product.images.length > 0
-                        ? `${API_BASE}${product.images[0]}`
+                        ? `${API_image}${product.images[0]}`
                         : '/placeholder.jpg'
                     }
                     alt={product.name}
