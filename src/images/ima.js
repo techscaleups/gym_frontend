@@ -7,6 +7,7 @@ import category1 from  "../assets/images/category1.svg";
 import category2 from  "../assets/images/category2.svg";
 import category3 from  "../assets/images/category3.svg";
 import category4 from  "../assets/images/category4.svg";
+import herobanner from "../assets/images/hero.jpg";
 
 
 const images = {
@@ -19,6 +20,7 @@ const images = {
    category2:category2,
    category3:category3,
    category4:category4,
+   herobanner:herobanner,
 };
 
 export default images;

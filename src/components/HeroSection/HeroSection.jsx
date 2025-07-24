@@ -1,15 +1,15 @@
 import React from 'react';
-
+import images from '../../images/ima';
 
 const HeroSection = () => {
   return (
     <div
       className="hero-section d-flex align-items-center justify-content-center text-center text-white"
       style={{
-        backgroundImage: 'url(/src/assets/images/herobanner.svg)',
+       backgroundImage: `url(${images.herobanner})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '50vh',
+        height: '60vh',
         position: 'relative',
       }}
     >
