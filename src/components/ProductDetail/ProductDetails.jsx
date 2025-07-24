@@ -177,19 +177,22 @@ const ProductDetails = () => {
         <Col md={6}>
           <div className="d-flex flex-column gap-3">
             {product.images.map((img, idx) => (
-              <img
-                key={idx}
-                src={`${API_BASE}${img}`}
-                alt={`Product ${idx + 1}`}
-                className="img-fluid rounded shadow-sm"
-                style={{
-                  width: '100%',
-                  height: '600px',
-                  objectFit: 'cover',
-                  objectPosition: 'center'
-                }}
-                onError={(e) => { e.target.src = '/placeholder.jpg'; }}
-              />
+          {images.map((img, idx) => (
+  <img
+    key={idx}
+    src={`https://techscaleups.in/gym_backend/api/uploads/${encodeURIComponent(img)}`}
+    alt={`Product ${idx + 1}`}
+    className="img-fluid rounded shadow-sm"
+    style={{
+      width: '100%',
+      height: '600px',
+      objectFit: 'cover',
+      objectPosition: 'center'
+    }}
+    onError={(e) => { e.target.src = '/placeholder.jpg'; }}
+  />
+))}
+
             ))}
           </div>
         </Col>
