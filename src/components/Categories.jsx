@@ -1,22 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import images from '../images/ima';
 const categories = [
   {
     name: 'Gym Equipment',
-    image: './src/assets/images/category3.svg',
+    image: images.category3
   },
   {
     name: 'Supplements',
-    image: './src/assets/images/category2.svg',
+       image: images.category2
   },
   {
     name: 'Apparel',
-    image: './src/assets/images/category4.svg',
+        image: images.category4
   },
   {
     name: 'Accessories',
-    image: './src/assets/images/category1.svg',
+    image: images.category1
   },
 ];
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_BASE } from "../constants/config";
+import images from "../images/ima";
 
 function OTPLogin() {
   const [mobile, setMobile] = useState("");
@@ -98,7 +99,7 @@ function OTPLogin() {
     <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100">
       <div className="w-100 mb-4">
         <img
-          src="/src/assets/images/loginbanner.jpg"
+          src={images.loginbanneer}
           alt="Banner"
           className="img-fluid rounded"
           style={{ maxHeight: "300px", objectFit: "cover", width: "100%" }}

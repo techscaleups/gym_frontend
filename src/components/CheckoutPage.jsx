@@ -120,11 +120,13 @@ const CheckoutPage = () => {
       }
 
       try {
-        const amountInPaise = Math.round(summary.total * 100); // ✅ Fixed conversion
+        // ✅ Convert total (rupees) to paise
+        const amountInPaise = Math.round(summary.total * 100);
+
         const razorpayOrder = await createRazorpayOrder(amountInPaise);
 
         const options = {
-          key: 'rzp_live_MmV8shPATEBEeh',
+          key: 'rzp_live_MmV8shPATEBEeh', // ✅ Replace with your real Razorpay key
           amount: razorpayOrder.amount,
           currency: razorpayOrder.currency,
           name: 'My Shop',

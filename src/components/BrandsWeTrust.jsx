@@ -1,21 +1,21 @@
 import React from 'react';
-
+import images from '../images/ima';
 const brands = [
   {
     name: 'Fitness brand',
-    image: '/src/assets/images/brand1.svg',
+  image: images.brand1
   },
   {
     name: 'Fitness brand',
-    image: '/src/assets/images/brand2.svg',
+   image: images.brand2
   },
   {
     name: 'Fitness brand',
-    image: '/src/assets/images/brand3.svg',
+     image: images.brand3
   },
   {
     name: 'Fitness brand',
-    image: '/src/assets/images/brand4.svg',
+     image: images.brand4
   },
 ];
 
