@@ -73,7 +73,7 @@ useEffect(() => {
           </div>
         </div>
 
-        <div className="row text-center mt-5">
+        <div className="row text-center mt-5 text-white">
           {['Hours', 'Minutes', 'Seconds'].map((label, i) => {
             const val = [timeLeft.hours, timeLeft.minutes, timeLeft.seconds][i]
               .toString()
