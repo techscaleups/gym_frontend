@@ -16,6 +16,7 @@ const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -64,7 +65,7 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user?.['_id']) {
-      toast.info('Please login to add items to the cart.');
+      toast('Please login to add items to the cart.');
       navigate('/login', { state: { from: location.pathname } });
       return;
     }
@@ -109,7 +110,7 @@ const ProductDetails = () => {
     }
 
     localStorage.setItem('viewcart', JSON.stringify(viewcart));
-    toast.success('Product added to cart!');
+    toast('Product added to cart!');
     navigate('/viewcart?marketplace=FitFlex');
   };
 
@@ -117,18 +118,18 @@ const ProductDetails = () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (!user?.['_id']) {
-      toast.warning('Please login to add items to wishlist.');
+      toast('Please login to add items to wishlist.');
       navigate('/login', { state: { from: location.pathname } });
       return;
     }
 
     if (product.sizes?.length && !selectedSize) {
-      toast.warning('Please select a size.');
+      toast('Please select a size.');
       return;
     }
 
     if (product.colors?.length && !selectedColor) {
-      toast.warning('Please select a color.');
+      toast('Please select a color.');
       return;
     }
 
@@ -142,10 +143,10 @@ const ProductDetails = () => {
 
     try {
       await axios.post(`${API_BASE}/wishlist`, wishlistItem);
-      toast.success('Product added to wishlist!');
+      toast('Product added to wishlist!');
     } catch (error) {
       console.error('Error adding to wishlist:', error);
-      toast.error('Failed to add to wishlist.');
+      toast('Failed to add to wishlist.');
     }
   };
 
@@ -157,30 +158,32 @@ const ProductDetails = () => {
     if (quantity > 1) setQuantity(quantity - 1);
   };
 
-  const handleReviewSubmit = (e) => {
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!reviewUser || !reviewComment || !reviewRating) {
-      toast.warning('Please complete all review fields.');
+      toast('Please complete all review fields.');
       return;
     }
 
-    const newReview = {
-      user: reviewUser,
-      rating: parseInt(reviewRating),
-      comment: reviewComment,
-      likes: 0,
-      replies: 0
-    };
+    try {
+      const res = await axios.post(`${API_BASE}/products/${product._id}/reviews`, {
+        user: reviewUser,
+        comment: reviewComment,
+        rating: parseInt(reviewRating)
+      });
 
-    setProduct(prev => ({
-      ...prev,
-      reviews: [...(prev.reviews || []), newReview]
-    }));
+      const updatedProduct = await axios.get(`${API_BASE}/products/slug/${slug}`);
+      setProduct(updatedProduct.data);
+      setRatingsData(calculateRatingsData(updatedProduct.data.reviews));
+      toast('Thank you for your review!');
 
-    setReviewUser('');
-    setReviewRating(5);
-    setReviewComment('');
-    toast.success('Thank you for your review!');
+      setReviewUser('');
+      setReviewRating(5);
+      setReviewComment('');
+    } catch (error) {
+      console.error('Review submit error:', error);
+      toast('Failed to submit review');
+    }
   };
 
   if (loading) {
@@ -219,8 +222,8 @@ const ProductDetails = () => {
 
         <Col md={6}>
           <h3 className="fw-bold">{product.name}</h3>
-          <p>{product.description}</p>
-          <p><strong>Brand</strong>: {product.brand}</p>
+          <p className="">{product.description}</p>
+          <p><strong>Brand</strong> {product.brand}</p>
 
           <h5 className="mb-3 card-text">
             ₹{product.discountPrice && product.discountPrice < product.price
@@ -232,26 +235,34 @@ const ProductDetails = () => {
               </span>
             )}
             {' '}
-            <Badge bg="success">In Stock: {product.stock}</Badge>
+            <Badge bg="success">In Stock {product.stock}</Badge>
           </h5>
 
           <ProductRating product={product} ratingsData={ratingsData} />
 
-          {product.sizes?.length > 0 && (
-            <SizeSelector
-              sizes={product.sizes}
-              selectedSize={selectedSize}
-              setSelectedSize={setSelectedSize}
-            />
-          )}
+          <div className="product-options">
+            {product.sizes?.length > 0 && (
+              <div className="product-size">
+                <SizeSelector
+                  className="size-selector"
+                  sizes={product.sizes}
+                  selectedSize={selectedSize}
+                  setSelectedSize={setSelectedSize}
+                />
+              </div>
+            )}
 
-          {product.colors?.length > 0 && (
-            <ColorSwatch
-              colors={product.colors}
-              selectedColor={selectedColor}
-              setSelectedColor={setSelectedColor}
-            />
-          )}
+            {product.colors?.length > 0 && (
+              <div className="product-color">
+                <ColorSwatch
+                  colors={product.colors}
+                  selectedColor={selectedColor}
+                  setSelectedColor={setSelectedColor}
+                />
+              </div>
+            )}
+          </div>
+
 
           <Form.Group className="mb-3 mt-3">
             <Form.Label><strong>Quantity</strong></Form.Label>
@@ -273,7 +284,8 @@ const ProductDetails = () => {
         </Col>
       </Row>
 
-      <h5 className="pt-5 pb-3">Customer Reviews</h5>
+    
+       <h5 className="pt-5 pb-3">Customer Reviews</h5>
       {product.reviews?.length === 0 ? (
         <p className="text-muted">No reviews yet.</p>
       ) : (
@@ -325,12 +337,12 @@ const ProductDetails = () => {
             />
           </Col>
           <Col md={12}>
-            <Button className='py-2' variant="primary">Submit Review</Button>
+            <Button className='py-2' variant="primary" type="submit">Submit Review</Button>
           </Col>
         </Row>
       </Form>
 
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
     </Container>
   );
 };

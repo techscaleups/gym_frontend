@@ -75,7 +75,7 @@ const Productgrid = () => {
       ) : products.length > 0 ? (
         <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 ">
           {products.map((product) => (
-            <div className="col" key={product._id}>
+            <div className="col mt-5" key={product._id}>
               <div
                 className="card h-100 shadow-sm p-2"
                 onClick={() => handleProductClick(product)}
