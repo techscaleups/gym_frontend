@@ -18,9 +18,9 @@ const HotPicks = () => {
   }, []);
 
   return (
-    <section className="py-5">
+    <section className="py-4">
       <div className="container">
-        <h5 className="fw-bold py-4">Hot Picks</h5>
+        <h5 className=" py-4">Hot Picks</h5>
         <div className="row g-4">
           {hotPicks.slice(0, 6).map((product, index) => (
             <div className="col-6 col-md-2" key={index}>
@@ -38,7 +38,7 @@ const HotPicks = () => {
                   />
                   <div className="card-body">
                     <div className="card-title mb-1">{product.name}</div>
-                    <p className="card-text text-muted mb-0">₹{product.price}</p>
+                    <div className="card-text  mb-0">₹{product.price}</div>
                   </div>
                 </div>
               </Link>

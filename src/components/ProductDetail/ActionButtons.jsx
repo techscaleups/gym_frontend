@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useContext} from 'react';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -6,29 +6,31 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_BASE } from '../../constants/config';
 
+
 const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
   const userId = localStorage.getItem('userId');
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
-
   const handleAddToCart = async () => {
     if (!userId) {
-      toast.error('🚫 User not logged in!');
+      toast('Please log in to add items to your cart.');
+      setTimeout(() => navigate('/login'), 1000); 
       return;
     }
 
+
     if (product.stock < 1) {
-      toast.error('❌ Product is out of stock!');
+      toast('Product is out of stock!');
       return;
     }
 
     if (product.sizes?.length > 0 && !selectedSize) {
-      toast.warning('📏 Please select a size.');
+      toast(' Please select a size.');
       return;
     }
 
     if (product.colors?.length > 0 && !selectedColor) {
-      toast.warning('🎨 Please select a color.');
+      toast('Please select a color.');
       return;
     }
 
@@ -43,7 +45,7 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
 
     try {
       const res = await axios.post(`${API_BASE}/cart/`, cartItem);
-      toast.success('🛒 Product added to cart!');
+      toast('Product added to cart!');
 
       const query = new URLSearchParams({
         name: product.name,
@@ -58,15 +60,17 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
       fetchCartItems();
     } catch (error) {
       console.error(' Error adding to cart:', error);
-      toast.error(' Failed to add product to cart.');
+      toast(' Failed to add product to cart.');
     }
   };
 
   const handleAddToWishlist = async () => {
     if (!userId) {
-      toast.error(' User not logged in!');
+      toast('Please log in to add items to your wishlist.');
+      setTimeout(() => navigate('/login'), 1000);
       return;
     }
+
 
     const wishlistItem = {
       userId,
@@ -78,10 +82,10 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
 
     try {
       const res = await axios.post(`${API_BASE}/wishlist/`, wishlistItem);
-      toast.success(' Product added to wishlist!');
+      toast(' Product added to wishlist!');
     } catch (error) {
       console.error(' Error adding to wishlist:', error);
-      toast.error(' Failed to add product to wishlist.');
+      toast(' Failed to add product to wishlist.');
     }
   };
 
@@ -121,7 +125,7 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
       </div>
 
       {/* Toast container for pop-up messages */}
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
+     <ToastContainer   autoClose={2000} />
     </div>
   );
 };

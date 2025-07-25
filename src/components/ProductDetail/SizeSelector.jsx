@@ -12,13 +12,14 @@ const SizeSelector = ({ sizes, selectedSize, setSelectedSize }) => {
             onClick={() => setSelectedSize(size)}
             style={{
               cursor: 'pointer',
-              border: selectedSize === size ? '2px solid #007bff' : '1px solid #ccc',
+              border: selectedSize === size ? '2px solid #28a745' : '1px solid #ccc',
               borderRadius: '8px',
               padding: '10px 20px',
               minWidth: '80px',
               textAlign: 'center',
-              backgroundColor: selectedSize === size ? '#e0f0ff' : '#f9f9f9',
+              backgroundColor: selectedSize === size ? '#eaffea' : '#f9f9f9',
               fontWeight: selectedSize === size ? 'bold' : 'normal'
+             
             }}
           >
             {size}
@@ -26,7 +27,7 @@ const SizeSelector = ({ sizes, selectedSize, setSelectedSize }) => {
         ))}
       </div>
       {selectedSize && (
-        <div className="mt-2 text-primary"> <strong>{selectedSize}</strong></div>
+        <div className="mt-2 text-success"> <strong>{selectedSize}</strong></div>
       )}
     </Form.Group>
   );

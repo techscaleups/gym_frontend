@@ -16,7 +16,6 @@ const ProductDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-
   const [product, setProduct] = useState(null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -24,13 +23,16 @@ const ProductDetails = () => {
   const [ratingsData, setRatingsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Save referral code if exists
+  // Review form state
+  const [reviewUser, setReviewUser] = useState('');
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+
   useEffect(() => {
     const ref = new URLSearchParams(location.search).get('ref');
     if (ref) localStorage.setItem('referralCode', ref);
   }, [location.search]);
 
-  // Fetch product details by slug
   useEffect(() => {
     if (!slug) return;
 
@@ -42,7 +44,7 @@ const ProductDetails = () => {
         setRatingsData(data.ratingsData || calculateRatingsData(data.reviews));
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching product:', err);
+        toast.error('Error fetching product:', err);
         setLoading(false);
       }
     };
@@ -63,23 +65,23 @@ const ProductDetails = () => {
   const handleAddToCart = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user?.['_id']) {
-      toast.warning('⚠ Please login to add items to the cart.');
-      navigate('/', { state: { from: location.pathname } });
+      toast.info('Please login to add items to the cart.');
+      navigate('/login', { state: { from: location.pathname } });
       return;
     }
 
     if (product.stock < 1) {
-      toast.error('❌ Product is out of stock!');
+      toast(' Product is out of stock!');
       return;
     }
 
     if (product.sizes?.length && !selectedSize) {
-      toast.warning('⚠ Please select a size.');
+      toast(' Please select a size.');
       return;
     }
 
     if (product.colors?.length && !selectedColor) {
-      toast.warning('⚠ Please select a color.');
+      toast('Please select a color.');
       return;
     }
 
@@ -108,25 +110,25 @@ const ProductDetails = () => {
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
-    toast.success('🛒 Product added to cart!');
+    toast.success('Product added to cart!');
   };
 
   const handleAddToWishlist = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (!user?.['_id']) {
-      toast.warning('⚠ Please login to add items to wishlist.');
-      navigate('/', { state: { from: location.pathname } });
+      toast.warning(' Please login to add items to wishlist.');
+      navigate('/login', { state: { from: location.pathname } });
       return;
     }
 
     if (product.sizes?.length && !selectedSize) {
-      toast.warning('⚠ Please select a size.');
+      toast.warning('Please select a size.');
       return;
     }
 
     if (product.colors?.length && !selectedColor) {
-      toast.warning('⚠ Please select a color.');
+      toast.warning('Please select a color.');
       return;
     }
 
@@ -140,10 +142,10 @@ const ProductDetails = () => {
 
     try {
       await axios.post(`${API_BASE}/wishlist`, wishlistItem);
-      toast.success('💖 Product added to wishlist!');
+      toast.success('Product added to wishlist!');
     } catch (error) {
       console.error('Error adding to wishlist:', error);
-      toast.error('❌ Failed to add to wishlist.');
+      toast.error(' Failed to add to wishlist.');
     }
   };
 
@@ -153,6 +155,32 @@ const ProductDetails = () => {
 
   const decreaseQty = () => {
     if (quantity > 1) setQuantity(quantity - 1);
+  };
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+    if (!reviewUser || !reviewComment || !reviewRating) {
+      toast.warning('Please complete all review fields.');
+      return;
+    }
+
+    const newReview = {
+      user: reviewUser,
+      rating: parseInt(reviewRating),
+      comment: reviewComment,
+      likes: 0,
+      replies: 0
+    };
+
+    setProduct(prev => ({
+      ...prev,
+      reviews: [...(prev.reviews || []), newReview]
+    }));
+
+    setReviewUser('');
+    setReviewRating(5);
+    setReviewComment('');
+    toast.success('Thank you for your review!');
   };
 
   if (loading) {
@@ -182,12 +210,7 @@ const ProductDetails = () => {
                 src={`https://techscaleups.in/gym_backend/${encodeURIComponent(img)}`}
                 alt={`Product ${idx + 1}`}
                 className="img-fluid rounded shadow-sm"
-                style={{
-                  width: '100%',
-                  height: '600px',
-                  objectFit: 'cover',
-                  objectPosition: 'center'
-                }}
+                style={{ width: '100%', height: '600px', objectFit: 'cover', objectPosition: 'center' }}
                 onError={(e) => { e.target.src = '/placeholder.jpg'; }}
               />
             ))}
@@ -196,10 +219,10 @@ const ProductDetails = () => {
 
         <Col md={6}>
           <h3 className="fw-bold">{product.name}</h3>
-          <p className="text-muted">{product.description}</p>
-          <p><strong>Brand:</strong> {product.brand}</p>
+          <p className="">{product.description}</p>
+          <p><strong>Brand</strong> {product.brand}</p>
 
-          <h5 className="mb-3">
+          <h5 className="mb-3 card-text">
             ₹{product.discountPrice && product.discountPrice < product.price
               ? product.discountPrice
               : product.price}
@@ -209,26 +232,34 @@ const ProductDetails = () => {
               </span>
             )}
             {' '}
-            <Badge bg="success">In Stock: {product.stock}</Badge>
+            <Badge bg="success">In Stock {product.stock}</Badge>
           </h5>
 
           <ProductRating product={product} ratingsData={ratingsData} />
 
-          {product.sizes?.length > 0 && (
-            <SizeSelector
-              sizes={product.sizes}
-              selectedSize={selectedSize}
-              setSelectedSize={setSelectedSize}
-            />
-          )}
+          <div className="product-options">
+            {product.sizes?.length > 0 && (
+              <div className="product-size">
+                <SizeSelector
+                  className="size-selector"
+                  sizes={product.sizes}
+                  selectedSize={selectedSize}
+                  setSelectedSize={setSelectedSize}
+                />
+              </div>
+            )}
 
-          {product.colors?.length > 0 && (
-            <ColorSwatch
-              colors={product.colors}
-              selectedColor={selectedColor}
-              setSelectedColor={setSelectedColor}
-            />
-          )}
+            {product.colors?.length > 0 && (
+              <div className="product-color">
+                <ColorSwatch
+                  colors={product.colors}
+                  selectedColor={selectedColor}
+                  setSelectedColor={setSelectedColor}
+                />
+              </div>
+            )}
+          </div>
+
 
           <Form.Group className="mb-3 mt-3">
             <Form.Label><strong>Quantity</strong></Form.Label>
@@ -250,7 +281,8 @@ const ProductDetails = () => {
         </Col>
       </Row>
 
-      <h5 className="mt-5">Customer Reviews</h5>
+    
+      <h5 className="pt-5 pb-3">Customer Reviews</h5>
       {product.reviews?.length === 0 ? (
         <p className="text-muted">No reviews yet.</p>
       ) : (
@@ -261,16 +293,53 @@ const ProductDetails = () => {
                 {review.user || 'User'}{' '}
                 <span className="text-warning">{'★'.repeat(review.rating)}</span>
               </Card.Title>
-              <Card.Text>{review.comment}</Card.Text>
-              <small className="text-muted">
-                👍 {review.likes} ‧ 💬 {review.replies}
-              </small>
+              <div className=''>{review.comment}</div>
             </Card.Body>
           </Card>
         ))
       )}
 
-      <ToastContainer position="top-right" autoClose={2500} />
+      <hr />
+      <h6 className="mb-3 mt-4">Leave a Review</h6>
+      <Form onSubmit={handleReviewSubmit}>
+        <Row className="g-3">
+          <Col md={4}>
+            <Form.Control
+              placeholder="Your name"
+              value={reviewUser}
+              onChange={(e) => setReviewUser(e.target.value)}
+              required
+            />
+          </Col>
+          <Col md={4}>
+            <Form.Select
+              value={reviewRating}
+              onChange={(e) => setReviewRating(e.target.value)}
+              required
+            >
+              <option value="">Rating</option>
+              {[5, 4, 3, 2, 1].map((val) => (
+                <option key={val} value={val}>{val} Star</option>
+              ))}
+            </Form.Select>
+          </Col>
+          <Col md={12}>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Write your review..."
+              value={reviewComment}
+              onChange={(e) => setReviewComment(e.target.value)}
+              required
+            />
+          </Col>
+          <Col md={12}>
+            <Button className='py-2' variant="primary">Submit Review</Button>
+          </Col>
+        </Row>
+      </Form>
+
+      <ToastContainer     />
     </Container>
   );
 };

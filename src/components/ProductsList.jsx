@@ -108,13 +108,13 @@ const ProductsList = () => {
                       }}
                     />
                     <div className="card-body">
-                      <div className="product_list_card-title">{product.name}</div>
+                      <div className="card-title">{product.name}</div>
                       <p className="text-muted mb-1" style={{ fontSize: '0.875rem' }}>
-                        Brand: <strong>{product.brand}</strong>
+                        Brand <strong>{product.brand}</strong>
                       </p>
-                      <p className="product_list_price">
+                      <div className="card-text">
                         ₹{product.price.toLocaleString('en-IN')}
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </Link>

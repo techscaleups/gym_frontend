@@ -4,6 +4,9 @@ import { useLocation } from 'react-router-dom';
 import { Container, Row, Col, Card, Spinner, Button } from 'react-bootstrap';
 import { FaHeart, FaStar } from 'react-icons/fa';
 import { API_BASE } from '../constants/config';
+import { toast, ToastContainer } from 'react-toastify'; // ✅ FIXED
+import 'react-toastify/dist/ReactToastify.css';
+
 export const API_image = "https://techscaleups.in/gym_backend";
 
 const SearchResults = () => {
@@ -15,7 +18,7 @@ const SearchResults = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [reload, setReload] = useState(false); // 🔁 manual reload
+  const [reload, setReload] = useState(false);
 
   const userId = localStorage.getItem('userId');
 
@@ -48,27 +51,36 @@ const SearchResults = () => {
     if (query.trim()) {
       fetchData();
     }
-  }, [query, userId, reload]); // 🔁 watch reload too
+  }, [query, userId, reload]);
 
   const toggleWishlist = async (productId) => {
-    if (!userId) return alert('Please login to use wishlist');
+    if (!userId) return toast.warning('Please login to use wishlist');
 
     try {
-      await axios.post(`${API_BASE}/wishlist/toggle`, {
+      const res = await axios.post(`${API_BASE}/wishlist/toggle`, {
         userId,
         productId,
       });
 
-      // Update UI and trigger re-fetch
+      const message = res.data?.message || 'Wishlist updated';
+      toast(message);
       setReload((prev) => !prev);
     } catch (err) {
       console.error('Wishlist toggle failed:', err);
+      toast('Failed to update wishlist');
     }
   };
 
   return (
     <Container className="mt-4 mb-5">
-      <h4 className="mb-4 ">
+      {/* ✅ Toast container for showing notifications */}
+      <ToastContainer
+      
+        autoClose={3000}
+  
+      />
+
+      <h4 className="mb-4">
         Search Results {query && <span>for "<strong>{query}</strong>"</span>}
       </h4>
 
@@ -93,7 +105,7 @@ const SearchResults = () => {
                       : 'https://via.placeholder.com/300x200?text=No+Image'
                   }
                   alt={product.name}
-                  style={{ height: '200px', objectFit: 'cover' }}
+                  className="responsive-image"
                 />
 
                 {/* Wishlist icon */}
@@ -115,19 +127,27 @@ const SearchResults = () => {
                   </div>
 
                   <div className="mb-1">
-                    <strong className="text-success me-2">₹{product.discountPrice || product.price}</strong>
+                    <strong className="card-text me-2">
+                      ₹{product.discountPrice || product.price}
+                    </strong>
                     {product.discountPrice && (
-                      <small className="text-muted text-decoration-line-through">₹{product.price}</small>
+                      <small className="text-muted text-decoration-line-through">
+                        ₹{product.price}
+                      </small>
                     )}
                   </div>
 
-                  <small className={`fw-semibold ${product.stock > 0 ? 'text-success' : 'text-danger'}`}>
+                  <small
+                    className={`fw-semibold mb-2 ${
+                      product.stock > 0 ? 'text-success' : 'text-danger'
+                    }`}
+                  >
                     {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
                   </small>
 
                   <a
                     href={`/ProductDetails/${product.slug}`}
-                    className="btn btn-outline-success w-100 mt-auto mt-3"
+                    className="btn btn-outline-success w-100 mt-auto"
                   >
                     View Product
                   </a>

@@ -43,8 +43,8 @@ const Cart = () => {
 
   const fetchCart = async () => {
     if (!userId) {
-      toast.error('User not logged in!');
-      return navigate('/');
+      toast('User not logged in!');
+      return navigate('/login');
     }
 
     try {
@@ -72,8 +72,8 @@ const Cart = () => {
 
       setCartItems([...mergedMap.values()]);
     } catch (err) {
-      console.error('Cart fetch error:', err);
-      toast.error('Failed to fetch cart');
+      console('Cart fetch error:', err);
+      toast('Failed to fetch cart');
     }
   };
 
@@ -85,36 +85,36 @@ const Cart = () => {
         )
       );
       setCartItems(items => items.filter(item => !item.mergedIds.some(id => mergedIds.includes(id))));
-      toast.success('Item removed!');
+      toast('Item removed!');
     } catch (err) {
       console.error('Remove error:', err);
-      toast.error('Failed to remove item!');
+      toast('Failed to remove item!');
     }
   };
 
- const handleQuantityChange = async (index, delta) => {
-  const updated = [...cartItems];
-  const item = updated[index];
-  const newQty = item.quantity + delta;
+  const handleQuantityChange = async (index, delta) => {
+    const updated = [...cartItems];
+    const item = updated[index];
+    const newQty = item.quantity + delta;
 
-  if (newQty < 1) return handleRemoveItem(item.mergedIds);
+    if (newQty < 1) return handleRemoveItem(item.mergedIds);
 
-  updated[index].quantity = newQty;
-  setCartItems(updated);
+    updated[index].quantity = newQty;
+    setCartItems(updated);
 
-  const cartItemId = item.mergedIds?.[0];
-  if (!cartItemId || cartItemId.endsWith('_url')) return;
+    const cartItemId = item.mergedIds?.[0];
+    if (!cartItemId || cartItemId.endsWith('_url')) return;
 
-  try {
-    await axios.put(`${API_BASE}/cart/quantity/${cartItemId}`, {
-      quantity: newQty,
-    });
-    toast.success('Quantity updated!');
-  } catch (err) {
-    console.error('Quantity update error:', err);
-    toast.error('Failed to update quantity');
-  }
-};
+    try {
+      await axios.put(`${API_BASE}/cart/quantity/${cartItemId}`, {
+        quantity: newQty,
+      });
+      toast('Quantity updated!');
+    } catch (err) {
+      console('Quantity update error:', err);
+      toast('Failed to update quantity');
+    }
+  };
 
 
   const subtotal = cartItems.reduce((sum, item) => {
@@ -148,7 +148,7 @@ const Cart = () => {
 
   return (
     <div className="container py-4">
-      <ToastContainer position="bottom-right" autoClose={2000} />
+   <ToastContainer   autoClose={2000} />
       <h2 className="mb-4 text-center text-md-start">Your Cart</h2>
 
       <div className="row gy-4">
@@ -255,9 +255,10 @@ const Cart = () => {
                 <span>₹{total.toFixed(2)}</span>
               </div>
 
-              <button className="btn btn-primary w-100" onClick={handleCheckout}>
+              <button className="btn btn-primary w-100 custom-padding" onClick={handleCheckout}>
                 Proceed to Checkout
               </button>
+
             </div>
           </div>
         )}

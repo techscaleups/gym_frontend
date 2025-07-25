@@ -24,7 +24,7 @@ const Categories = () => {
   return (
     <section className="py-5">
       <div className="container">
-        <h4 className="fw-bold mb-4">Categories</h4>
+        <h5 className=" mb-4">Categories</h5>
         <div className="row g-4">
           {categories.map((category, index) => (
             <div key={index} className="col-6 col-md-3">
@@ -37,7 +37,7 @@ const Categories = () => {
                     style={{ height: '100', objectFit: 'cover' }}
                   />
                   <div className="card-body text-center">
-                    <h6 className="mb-0">{category.name}</h6>
+                    <div className="mb-0 category_title ">{category.name}</div>
                   </div>
                 </div>
               </Link>

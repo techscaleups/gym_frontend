@@ -82,7 +82,7 @@ function OTPLogin() {
           localStorage.setItem("cart", JSON.stringify(cart));
           navigate("/cart");
         } else {
-          navigate("/home");
+          navigate("/");
         }
 
         setMessage("Logged in successfully.");
@@ -96,6 +96,7 @@ function OTPLogin() {
   };
 
   return (
+
     <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100">
       <div className="w-100 mb-4">
         <img
@@ -192,6 +193,7 @@ function OTPLogin() {
           )}
         </form>
       </div>
+       <ToastContainer   autoClose={2000} />
     </div>
   );
 }

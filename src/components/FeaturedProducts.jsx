@@ -26,9 +26,9 @@ const FeaturedProducts = () => {
   }, []);
 
   return (
-    <section className="py-5">
+    <section className="">
       <div className="container">
-        <h5 className="fw-bold py-4">Featured Products</h5>
+        <h5 className=" py-4">Featured Products</h5>
         <Swiper
           slidesPerView={2}
           spaceBetween={16}
@@ -56,8 +56,8 @@ const FeaturedProducts = () => {
                     style={{ height: '180px', objectFit: 'cover' }}
                   />
                   <div className="card-body">
-                    <h6 className="card-title mb-1 text-dark">{product.name}</h6>
-                    <p className="card-text text-muted mb-0">₹{product.price}</p>
+                    <div className="card-title mb-1 ">{product.name}</div>
+                    <div className="card-text  mb-0">₹{product.price}</div>
                   </div>
                 </div>
               </Link>

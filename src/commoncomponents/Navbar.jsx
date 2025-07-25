@@ -38,44 +38,39 @@ const Header = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
- const fetchCartCount = async (uid) => {
-  try {
-    const res = await axios.get(`${API_BASE}/cart/user/${uid}`);
-    const totalQty = res.data.reduce((sum, item) => sum + item.quantity, 0);
-    setCartCount(totalQty);
-  } catch (err) {
-    console.error('Failed to fetch cart count', err);
-  }
-};
+  const fetchCartCount = async (uid) => {
+    try {
+      const res = await axios.get(`${API_BASE}/cart/user/${uid}`);
+      const totalQty = res.data.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalQty);
+    } catch (err) {
+      console.error('Failed to fetch cart count', err);
+    }
+  };
 
-const fetchWishlistCount = async (uid) => {
-  try {
-    const res = await axios.get(`${API_BASE}/wishlist/user/${uid}`);
-    setWishlistCount(res.data.length || 0);
-  } catch (err) {
-    console.error('Failed to fetch wishlist count', err);
-  }
-};
-
+  const fetchWishlistCount = async (uid) => {
+    try {
+      const res = await axios.get(`${API_BASE}/wishlist/user/${uid}`);
+      setWishlistCount(res.data.length || 0);
+    } catch (err) {
+      console.error('Failed to fetch wishlist count', err);
+    }
+  };
 
   const handleLogout = () => {
-  // Clear specific user data from localStorage
-  localStorage.removeItem('userId');
-  localStorage.removeItem('user');
-  
-  // Clear context or local state (if you are using context or props)
-  setUserId('');
-  setUserName('');
-  setUserEmail('');
-  setCartCount(0);       // If using cart state
-  setWishlistCount(0);   // If using wishlist state
-
-  // Toast message
-  toast.success('Logged out successfully');
-
-  // Navigate to home or login page
-  navigate('/');
-};
+    setTimeout(() => {
+      localStorage.removeItem('userId');
+      localStorage.removeItem('user');
+      setUserId('');
+      setUserName('');
+      setUserEmail('');
+      setCartCount(0);
+      setWishlistCount(0);
+      setShowProfile(false);
+      toast('Logged out successfully');
+      navigate('/');
+    }, 100);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -154,9 +149,8 @@ const fetchWishlistCount = async (uid) => {
                   </div>
                 )}
               </div>
-
             ) : (
-              <NavLink to="/" className="text-dark fw-semibold small text-decoration-none">
+              <NavLink to="/login" className="text-dark fw-semibold small text-decoration-none">
                 Login
               </NavLink>
             )}
@@ -212,14 +206,17 @@ const fetchWishlistCount = async (uid) => {
                   <div className="dropdown-content shadow mt-2">
                     <p className="mb-1 fw-semibold">{userName}</p>
                     <p className="mb-2 small text-muted">{userEmail}</p>
-                    <button className="btn btn-sm btn-outline-danger w-100" onClick={handleLogout}>
+                    <button
+                      className="btn btn-sm btn-outline-danger w-100"
+                      onClick={handleLogout}
+                    >
                       Logout
                     </button>
                   </div>
                 )}
               </div>
             ) : (
-              <NavLink to="/" className="text-dark fw-semibold small text-decoration-none">
+              <NavLink to="/login" className="text-dark fw-semibold small text-decoration-none">
                 Login
               </NavLink>
             )}
@@ -227,7 +224,7 @@ const fetchWishlistCount = async (uid) => {
         </div>
       </div>
 
-      <ToastContainer position="top-center" />
+     
 
       <style>{`
         .profile-dropdown {

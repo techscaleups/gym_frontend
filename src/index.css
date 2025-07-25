@@ -1,0 +1,28 @@
+@media (max-width: 767px) {
+  .filter-drawer {
+    display: block;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 60px);
+    background-color: #fff;
+    overflow-y: auto;
+    z-index: 1000;
+    padding: 1rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .filter-drawer.open {
+    transform: translateX(0);
+  }
+
+  .filter-drawer h5 {
+    font-size: 1.0rem;
+  }
+}
+
+
+

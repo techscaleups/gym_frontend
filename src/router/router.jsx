@@ -9,11 +9,11 @@ import Profile from '../pages/Profile';
 import NotFound from '../pages/NotFound';
 import Wishlist from '../pages/wishlist';
 import Orders from '../pages/Orders';
-import SearchResults from '../pages/Search'; // ✅ Add this
+import SearchResults from '../pages/Search';
 
 const router = [
   {
-    path: '/Home',
+    path: '/',
     name: 'Home',
     element: Home,
   },
@@ -40,7 +40,7 @@ const router = [
     element: Checkout,
   },
   {
-    path: '/',
+    path: '/login',
     name: 'Login',
     element: Login,
   },
@@ -60,13 +60,13 @@ const router = [
     element: Profile,
   },
   {
-    path: '/search', // ✅ Search route
+    path: '/search', 
     name: 'SearchResults',
     element: SearchResults,
   },
    {
-    path: '/Orders', // ✅ Search route
-    name: 'Orders',
+    path: '/orders', 
+    name: 'orders',
     element: Orders,
   },
   {

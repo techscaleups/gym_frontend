@@ -73,7 +73,7 @@ const Productgrid = () => {
       {loading ? (
         <p>Loading products...</p>
       ) : products.length > 0 ? (
-        <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 ">
           {products.map((product) => (
             <div className="col" key={product._id}>
               <div
@@ -88,17 +88,16 @@ const Productgrid = () => {
                       : '/placeholder.jpg'
                   }
                   alt={product.name}
-                  className="card-img-top rounded"
-                  style={{ height: '250px', objectFit: 'cover' }}
+                  className="responsive-image"
                 />
                 <div className="card-body">
-                  <div className="product_list_card-title">{product.name}</div>
-                  <p className="text-muted mb-1" style={{ fontSize: '0.875rem' }}>
-                    Brand: <strong>{product.brand}</strong>
-                  </p>
-                  <p className="product_list_price">
+                  <div className="card-title">{product.name}</div>
+                     <p className="text-muted mb-1" style={{ fontSize: '0.875rem' }}>
+                        Brand <strong>{product.brand}</strong>
+                      </p>
+                  <div className="card-text">
                     ₹{product.price.toLocaleString('en-IN')}
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>

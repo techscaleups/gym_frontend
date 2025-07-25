@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../constants/config';
 
-
 const DealOfTheDay = () => {
+  const navigate = useNavigate();
   const [deal, setDeal] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const [expired, setExpired] = useState(false);
 
-useEffect(() => {
-  axios.get(`${API_BASE}/deals/current`)
-    .then(res => {
-      setDeal(res.data);
-      // Don't call updateCountdown here
-    })
-    .catch(err => console.error('Error fetching deal:', err));
-}, []);
-
+  useEffect(() => {
+    axios.get(`${API_BASE}/deals/current`)
+      .then(res => {
+        setDeal(res.data);
+      })
+      .catch(err => console.error('Error fetching deal:', err));
+  }, []);
 
   useEffect(() => {
     if (!deal?.dealEndTime) return;
@@ -42,10 +41,20 @@ useEffect(() => {
     setTimeLeft({ hours, minutes, seconds });
   };
 
-  if (!deal || timeLeft === null) return <p className="text-white">Loading Deal...</p>;
+  const handleBuyNow = () => {
+    const queryParams = new URLSearchParams({
+      name: deal.name,
+      price: deal.price,
+      qty: 1,
+    }).toString();
+
+    navigate(`/checkout?${queryParams}`);
+  };
+
+  if (!deal || timeLeft === null) return <p className="">Loading Deal...</p>;
 
   return (
-    <section className="py-5" style={{ backgroundColor: '#111a14', color: '#fff' }}>
+    <section className="pt-3 pb-5" style={{ backgroundColor: '#111a14', color: '#fff' }}>
       <div className="container">
         <h5 className="fw-bold py-4">Deal of the Day</h5>
 
@@ -60,20 +69,24 @@ useEffect(() => {
           </div>
 
           <div className="col-12 col-md-7">
-            <p className="  text-white small mb-3">Limited Time Offer</p>
-            <h6 className="fw-bold text-white">{deal.name}</h6>
-            <p className="text-white mb-2">{deal.description}</p>
+            <p className="small mb-3">Limited Time Offer</p>
+            <h6 className="fw-bold">{deal.name}</h6>
+            <p className="mb-2">{deal.description}</p>
             <p className="fw-bold text-success fs-5">₹ {deal.price}</p>
 
             {!expired ? (
-              <button className="btn btn-success btn-sm fw-semibold">Grab Now</button>
+              <button className="btn btn-success btn-sm" onClick={handleBuyNow}>
+                Buy Now
+              </button>
             ) : (
-              <button className="btn btn-secondary btn-sm fw-semibold" disabled>Deal Expired</button>
+              <button className="btn btn-secondary btn-sm" disabled>
+                Deal Expired
+              </button>
             )}
           </div>
         </div>
 
-        <div className="row text-center mt-5 text-white">
+        <div className="row text-center mt-5">
           {['Hours', 'Minutes', 'Seconds'].map((label, i) => {
             const val = [timeLeft.hours, timeLeft.minutes, timeLeft.seconds][i]
               .toString()
@@ -84,7 +97,7 @@ useEffect(() => {
                 <div className="bg-dark rounded py-2">
                   <h5 className="mb-0">{val}</h5>
                 </div>
-                <small className="text-muted">{label}</small>
+                <small>{label}</small>
               </div>
             );
           })}
