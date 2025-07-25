@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useContext} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -6,11 +6,11 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { API_BASE } from '../../constants/config';
 
-
 const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
   const userId = localStorage.getItem('userId');
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
+
   const handleAddToCart = async () => {
     if (!userId) {
       toast('Please log in to add items to your cart.');
@@ -18,14 +18,13 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
       return;
     }
 
-
     if (product.stock < 1) {
       toast('Product is out of stock!');
       return;
     }
 
     if (product.sizes?.length > 0 && !selectedSize) {
-      toast(' Please select a size.');
+      toast('Please select a size.');
       return;
     }
 
@@ -45,22 +44,18 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
 
     try {
       const res = await axios.post(`${API_BASE}/cart/`, cartItem);
-      toast('Product added to cart!');
+      toast.success('Product added to cart!');
 
-      const query = new URLSearchParams({
-        name: product.name,
-        price: product.price,
-        quantity: quantity || 1,
-        size: selectedSize || '',
-        color: selectedColor || '',
-        image: product.images?.[0] || ''
-      }).toString();
-
-      navigate(`/cart?${query}`);
+      // Optional: Update local cart state
       fetchCartItems();
+
+      // Navigate to /viewcart with marketplace query
+      setTimeout(() => {
+        navigate('/viewcart?marketplace=FitFlex');
+      }, 1500); // Delay to let the toast show
     } catch (error) {
-      console.error(' Error adding to cart:', error);
-      toast(' Failed to add product to cart.');
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to add product to cart.');
     }
   };
 
@@ -71,7 +66,6 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
       return;
     }
 
-
     const wishlistItem = {
       userId,
       productId: product._id,
@@ -81,22 +75,21 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
     };
 
     try {
-      const res = await axios.post(`${API_BASE}/wishlist/`, wishlistItem);
-      toast(' Product added to wishlist!');
+      await axios.post(`${API_BASE}/wishlist/`, wishlistItem);
+      toast.success('Product added to wishlist!');
     } catch (error) {
-      console.error(' Error adding to wishlist:', error);
-      toast(' Failed to add product to wishlist.');
+      console.error('Error adding to wishlist:', error);
+      toast.error('Failed to add product to wishlist.');
     }
   };
 
   const fetchCartItems = async () => {
     if (!userId) return;
-
     try {
       const res = await axios.get(`${API_BASE}/cart/user/${userId}`);
       setCartItems(res.data);
     } catch (error) {
-      console.error(' Failed to fetch cart:', error);
+      console.error('Failed to fetch cart:', error);
     }
   };
 
@@ -125,7 +118,7 @@ const CartManager = ({ product, selectedSize, selectedColor, quantity }) => {
       </div>
 
       {/* Toast container for pop-up messages */}
-     <ToastContainer   autoClose={2000} />
+      <ToastContainer autoClose={2000} />
     </div>
   );
 };

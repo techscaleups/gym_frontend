@@ -113,7 +113,7 @@ const Header = () => {
               )}
             </NavLink>
 
-            <NavLink to="/cart" className="text-dark position-relative fs-5">
+            <NavLink to="/viewcart" className="text-dark position-relative fs-5">
               <FaShoppingCart />
               {cartCount > 0 && (
                 <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill">
@@ -183,7 +183,7 @@ const Header = () => {
                 </span>
               )}
             </NavLink>
-            <NavLink to="/cart" className="text-dark position-relative fs-5">
+            <NavLink to="/viewcart" className="text-dark position-relative fs-5">
               <FaShoppingCart />
               {cartCount > 0 && (
                 <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-pill">
@@ -224,7 +224,7 @@ const Header = () => {
         </div>
       </div>
 
-     
+      <ToastContainer   autoClose={2000}  />
 
       <style>{`
         .profile-dropdown {

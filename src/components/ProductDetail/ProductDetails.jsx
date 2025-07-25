@@ -23,7 +23,6 @@ const ProductDetails = () => {
   const [ratingsData, setRatingsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Review form state
   const [reviewUser, setReviewUser] = useState('');
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
@@ -44,7 +43,7 @@ const ProductDetails = () => {
         setRatingsData(data.ratingsData || calculateRatingsData(data.reviews));
         setLoading(false);
       } catch (err) {
-        toast.error('Error fetching product:', err);
+        toast.error('Error fetching product');
         setLoading(false);
       }
     };
@@ -71,12 +70,12 @@ const ProductDetails = () => {
     }
 
     if (product.stock < 1) {
-      toast(' Product is out of stock!');
+      toast('Product is out of stock!');
       return;
     }
 
     if (product.sizes?.length && !selectedSize) {
-      toast(' Please select a size.');
+      toast('Please select a size.');
       return;
     }
 
@@ -95,8 +94,8 @@ const ProductDetails = () => {
       color: selectedColor
     };
 
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const existing = cart.find(
+    const viewcart = JSON.parse(localStorage.getItem('viewcart')) || [];
+    const existing = viewcart.find(
       item =>
         item.id === cartItem.id &&
         item.size === cartItem.size &&
@@ -106,18 +105,19 @@ const ProductDetails = () => {
     if (existing) {
       existing.quantity += quantity;
     } else {
-      cart.push(cartItem);
+      viewcart.push(cartItem);
     }
 
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('viewcart', JSON.stringify(viewcart));
     toast.success('Product added to cart!');
+    navigate('/viewcart?marketplace=FitFlex');
   };
 
   const handleAddToWishlist = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (!user?.['_id']) {
-      toast.warning(' Please login to add items to wishlist.');
+      toast.warning('Please login to add items to wishlist.');
       navigate('/login', { state: { from: location.pathname } });
       return;
     }
@@ -145,7 +145,7 @@ const ProductDetails = () => {
       toast.success('Product added to wishlist!');
     } catch (error) {
       console.error('Error adding to wishlist:', error);
-      toast.error(' Failed to add to wishlist.');
+      toast.error('Failed to add to wishlist.');
     }
   };
 
@@ -219,8 +219,8 @@ const ProductDetails = () => {
 
         <Col md={6}>
           <h3 className="fw-bold">{product.name}</h3>
-          <p className="">{product.description}</p>
-          <p><strong>Brand</strong> {product.brand}</p>
+          <p>{product.description}</p>
+          <p><strong>Brand</strong>: {product.brand}</p>
 
           <h5 className="mb-3 card-text">
             ₹{product.discountPrice && product.discountPrice < product.price
@@ -232,34 +232,26 @@ const ProductDetails = () => {
               </span>
             )}
             {' '}
-            <Badge bg="success">In Stock {product.stock}</Badge>
+            <Badge bg="success">In Stock: {product.stock}</Badge>
           </h5>
 
           <ProductRating product={product} ratingsData={ratingsData} />
 
-          <div className="product-options">
-            {product.sizes?.length > 0 && (
-              <div className="product-size">
-                <SizeSelector
-                  className="size-selector"
-                  sizes={product.sizes}
-                  selectedSize={selectedSize}
-                  setSelectedSize={setSelectedSize}
-                />
-              </div>
-            )}
+          {product.sizes?.length > 0 && (
+            <SizeSelector
+              sizes={product.sizes}
+              selectedSize={selectedSize}
+              setSelectedSize={setSelectedSize}
+            />
+          )}
 
-            {product.colors?.length > 0 && (
-              <div className="product-color">
-                <ColorSwatch
-                  colors={product.colors}
-                  selectedColor={selectedColor}
-                  setSelectedColor={setSelectedColor}
-                />
-              </div>
-            )}
-          </div>
-
+          {product.colors?.length > 0 && (
+            <ColorSwatch
+              colors={product.colors}
+              selectedColor={selectedColor}
+              setSelectedColor={setSelectedColor}
+            />
+          )}
 
           <Form.Group className="mb-3 mt-3">
             <Form.Label><strong>Quantity</strong></Form.Label>
@@ -281,7 +273,6 @@ const ProductDetails = () => {
         </Col>
       </Row>
 
-    
       <h5 className="pt-5 pb-3">Customer Reviews</h5>
       {product.reviews?.length === 0 ? (
         <p className="text-muted">No reviews yet.</p>
@@ -293,7 +284,7 @@ const ProductDetails = () => {
                 {review.user || 'User'}{' '}
                 <span className="text-warning">{'★'.repeat(review.rating)}</span>
               </Card.Title>
-              <div className=''>{review.comment}</div>
+              <div>{review.comment}</div>
             </Card.Body>
           </Card>
         ))
@@ -339,7 +330,7 @@ const ProductDetails = () => {
         </Row>
       </Form>
 
-      <ToastContainer     />
+      <ToastContainer />
     </Container>
   );
 };

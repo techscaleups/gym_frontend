@@ -13,11 +13,11 @@ const Cart = () => {
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
-    const productData = searchParams.get('productData');
+    const productDataParam = searchParams.get('productData');
 
-    if (productData) {
+    if (productDataParam) {
       try {
-        const decoded = JSON.parse(decodeURIComponent(productData));
+        const decoded = JSON.parse(decodeURIComponent(productDataParam));
         const newItem = {
           product: {
             _id: decoded.id,
@@ -33,7 +33,7 @@ const Cart = () => {
         };
         setCartItems([newItem]);
       } catch (err) {
-        console.error('Invalid product data in URL:', err);
+        console.error('Invalid productData param:', err);
         fetchCart();
       }
     } else {
@@ -72,7 +72,7 @@ const Cart = () => {
 
       setCartItems([...mergedMap.values()]);
     } catch (err) {
-      console('Cart fetch error:', err);
+      console.error('Cart fetch error:', err);
       toast('Failed to fetch cart');
     }
   };
@@ -111,11 +111,10 @@ const Cart = () => {
       });
       toast('Quantity updated!');
     } catch (err) {
-      console('Quantity update error:', err);
+      console.error('Quantity update error:', err);
       toast('Failed to update quantity');
     }
   };
-
 
   const subtotal = cartItems.reduce((sum, item) => {
     const price = item.product?.discountPrice || item.product?.price || 0;
@@ -148,7 +147,7 @@ const Cart = () => {
 
   return (
     <div className="container py-4">
-   <ToastContainer   autoClose={2000} />
+      <ToastContainer autoClose={2000} />
       <h2 className="mb-4 text-center text-md-start">Your Cart</h2>
 
       <div className="row gy-4">
@@ -258,7 +257,6 @@ const Cart = () => {
               <button className="btn btn-primary w-100 custom-padding" onClick={handleCheckout}>
                 Proceed to Checkout
               </button>
-
             </div>
           </div>
         )}

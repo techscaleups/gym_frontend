@@ -154,7 +154,7 @@ const CheckoutPage = () => {
           toast(res.data.message || 'Order failed.');
         }
       } catch (err) {
-        toast(err.response?.data?.message || 'Failed to place order.');
+        toast(err.response?.data?.message || 'Delivery is not available to your location');
       } finally {
         setIsPlacingOrder(false);
       }

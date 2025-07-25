@@ -30,8 +30,8 @@ const router = [
 
 
   {
-    path: '/cart',
-    name: 'Cart',
+    path: '/viewcart',
+    name: 'viewcart',
     element: Cart,
   },
   {
@@ -65,7 +65,7 @@ const router = [
     element: SearchResults,
   },
    {
-    path: '/orders', 
+    path: '/order-confirmatio', 
     name: 'orders',
     element: Orders,
   },

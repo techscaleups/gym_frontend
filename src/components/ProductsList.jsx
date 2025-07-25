@@ -100,12 +100,8 @@ const ProductsList = () => {
                           : '/placeholder.jpg'
                       }
                       alt={product.name || 'Product Image'}
-                      className="img-fluid rounded"
-                      style={{
-                        height: '250px',       // or adjust to 200px, 300px as needed
-                        width: '100%',
-                        objectFit: 'cover'
-                      }}
+                      className=" responsive-image"
+                     
                     />
                     <div className="card-body">
                       <div className="card-title">{product.name}</div>

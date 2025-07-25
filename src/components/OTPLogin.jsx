@@ -3,6 +3,8 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_BASE } from "../constants/config";
 import images from "../images/ima";
+import { toast, ToastContainer } from 'react-toastify'; // ✅ FIXED
+import 'react-toastify/dist/ReactToastify.css';
 
 function OTPLogin() {
   const [mobile, setMobile] = useState("");
@@ -98,6 +100,7 @@ function OTPLogin() {
   return (
 
     <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100">
+          <ToastContainer  autoClose={2000} />
       <div className="w-100 mb-4">
         <img
           src={images.loginbanneer}
@@ -193,7 +196,7 @@ function OTPLogin() {
           )}
         </form>
       </div>
-       <ToastContainer   autoClose={2000} />
+   
     </div>
   );
 }

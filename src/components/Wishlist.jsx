@@ -90,57 +90,67 @@ const Wishlist = () => {
       {wishlist.length === 0 ? (
         <p>Your wishlist is empty.</p>
       ) : (
-        <ListGroup variant="flush">
-          {wishlist.map((item) => (
-            <ListGroup.Item key={item._id} className="py-3">
-              <Row className="align-items-center">
-                <Col xs={2}>
-                  <Image
-                    src={
-                      item.product?.image
-                        ? `https://techscaleups.in/gym_backend/${item.product.image}`
-                        : '/placeholder.jpg'
-                    }
-                    alt={item.product?.name || 'No Image'}
-                    fluid
-                    rounded
-                    style={{ height: '200px', objectFit: 'cover' }}
-                    onError={(e) => {
-                      e.target.src = '/placeholder.jpg';
-                    }}
-                  />
-                </Col>
-                <Col xs={6}>
-                  <h5>{item.product?.name || 'Unnamed Product'}</h5>
-                  <small
-                    className={
-                      item.product?.stock > 0 ? 'text-success' : 'text-danger'
-                    }
-                  >
-                    {item.product?.stock > 0 ? 'In stock' : 'Out of stock'}
-                  </small>
-                </Col>
-                <Col xs={4} className="text-end">
-                  <Button
-                    variant="outline-success"
-                    className="text-success me-2 custom-hover-white"
-                    disabled={item.product?.stock < 1}
-                    onClick={() => handleAddToCart(item.product)}
-                  >
-                    {item.product?.stock < 1 ? 'Out of Stock' : 'Add to Cart'}
-                  </Button>
+   <ListGroup variant="flush">
+  {wishlist.map((item) => (
+    <ListGroup.Item key={item._id} className="py-3">
+      <Row className="align-items-center gy-3">
+        {/* Image */}
+        <Col xs={12} md={2} className="text-center">
+          <Image
+            src={
+              item.product?.image
+                ? `https://techscaleups.in/gym_backend/${item.product.image}`
+                : '/placeholder.jpg'
+            }
+            alt={item.product?.name || 'No Image'}
+            fluid
+            rounded
+            style={{ maxHeight: '180px', objectFit: 'cover' }}
+            onError={(e) => {
+              e.target.src = '/placeholder.jpg';
+            }}
+          />
+        </Col>
 
-                  <Button
-                    variant="outline-danger px-4"
-                    onClick={() => handleRemove(item._id)}
-                  >
-                    Remove
-                  </Button>
-                </Col>
-              </Row>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
+        {/* Product Info */}
+        <Col xs={12} md={6}>
+          <h5 className="text-center text-md-start">{item.product?.name || 'Unnamed Product'}</h5>
+          <div className="text-center text-md-start">
+            <small
+              className={
+                item.product?.stock > 0 ? 'text-success' : 'text-danger'
+              }
+            >
+              {item.product?.stock > 0 ? 'In stock' : 'Out of stock'}
+            </small>
+          </div>
+        </Col>
+
+        {/* Action Buttons */}
+        <Col xs={12} md={4} className="text-center text-md-end">
+          <div className="d-flex flex-column flex-md-row justify-content-center justify-content-md-end align-items-center gap-2">
+            <Button
+              variant="outline-success"
+              className="text-success custom-hover-white w-100 w-md-auto"
+              disabled={item.product?.stock < 1}
+              onClick={() => handleAddToCart(item.product)}
+            >
+              {item.product?.stock < 1 ? 'Out of Stock' : 'Add to Cart'}
+            </Button>
+
+            <Button
+              variant="outline-danger px-4 w-100 w-md-auto"
+              onClick={() => handleRemove(item._id)}
+            >
+              Remove
+            </Button>
+          </div>
+        </Col>
+      </Row>
+    </ListGroup.Item>
+  ))}
+</ListGroup>
+
       )}
     </Container>
   );
