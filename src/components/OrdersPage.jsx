@@ -50,8 +50,8 @@ const OrdersPage = () => {
             ref={order._id === recentOrderId ? highlightRef : null}
             className={`border p-3 mb-3 ${order._id === recentOrderId ? 'bg-warning-subtle' : ''}`}
           >
-            <h5>Order ID: {order._id}</h5>
-            <p><strong>Name:</strong> {order.name}</p>
+            <h5 className="pb-3">Order ID: {order._id}</h5>
+            {/* <p><strong>Name:</strong> {order.name}</p> */}
             <p><strong>Total:</strong> ₹{order.totalAmount}</p>
             <p><strong>Payment:</strong> {order.paymentMethod}</p>
             <p><strong>Status:</strong> {order.status}</p>
