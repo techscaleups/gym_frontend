@@ -12,7 +12,8 @@ const DealOfTheDay = () => {
   useEffect(() => {
     axios.get(`${API_BASE}/deals/current`)
       .then(res => {
-        setDeal(res.data);
+          console.log('Deal Data:', res.data);  // 🔍 Check if imageBase64 looks right
+    setDeal(res.data);
       })
       .catch(err => console.error('Error fetching deal:', err));
   }, []);

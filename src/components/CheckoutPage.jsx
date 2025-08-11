@@ -17,7 +17,6 @@ const CheckoutPage = () => {
   const qty = searchParams.get('qty');
   const id = searchParams.get('id');
   const refCode = searchParams.get('ref');
-
   const userId = localStorage.getItem('userId');
 
   const [formData, setFormData] = useState({
@@ -110,13 +109,13 @@ const CheckoutPage = () => {
     setIsPlacingOrder(true);
 
     if (!summary?.items || summary.items.length === 0) {
-      toast('Your cart is empty.');
+      toast.error('Your cart is empty.');
       setIsPlacingOrder(false);
       return;
     }
 
     if (!isFormValid()) {
-      toast('Please fill in all required fields.');
+      toast.error('Please fill in all required fields.');
       setIsPlacingOrder(false);
       return;
     }
@@ -144,91 +143,96 @@ const CheckoutPage = () => {
       refCode: summary.refCode || '',
     };
 
+    // ✅ Cash on Delivery flow
     if (formData.paymentMethod === 'Cash on Delivery') {
       try {
-        const res = await axios.post(`${API_BASE}/orders/create`, baseOrderData);
+        const res = await axios.post(`${API_BASE}/orders`, baseOrderData); // fixed endpoint
         if (res.data.success) {
           await clearCart();
+          toast.success('Order placed successfully!');
           navigate('/orders', { state: { orderId: res.data.orderId } });
         } else {
-          toast(res.data.message || 'Order failed.');
+          toast.error(res.data.message || 'Order failed.');
         }
       } catch (err) {
-        toast(err.response?.data?.message || 'Delivery is not available to your location');
+        toast.error(err.response?.data?.message || 'Delivery is not available to your location');
       } finally {
         setIsPlacingOrder(false);
       }
-    } else {
-      const isRzpLoaded = await loadRazorpayScript();
-      if (!isRzpLoaded) {
-        toast.error('Failed to load Razorpay SDK.');
-        setIsPlacingOrder(false);
-        return;
-      }
+      return;
+    }
 
-      try {
-        const amountInPaise = Math.round(summary.total * 100);
-        const razorpayOrder = await createRazorpayOrder(amountInPaise);
+    // ✅ Online Payment flow
+    const isRzpLoaded = await loadRazorpayScript();
+    if (!isRzpLoaded) {
+      toast.error('Failed to load Razorpay SDK.');
+      setIsPlacingOrder(false);
+      return;
+    }
 
-        const options = {
-          key: 'rzp_live_MmV8shPATEBEeh',
-          amount: razorpayOrder.amount,
-          currency: razorpayOrder.currency,
-          name: 'My Shop',
-          description: 'Payment for Order',
-          order_id: razorpayOrder.id,
-          handler: async function (response) {
-            const verified = await verifyRazorpaySignature({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            });
+    try {
+      const amountInPaise = Math.round(summary.total * 100);
+      const razorpayOrder = await createRazorpayOrder(amountInPaise);
 
-            if (!verified) {
-              toast.error('Payment verification failed.');
-              return;
-            }
+      const options = {
+        key: 'rzp_live_MmV8shPATEBEeh',
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        name: 'My Shop',
+        description: 'Payment for Order',
+        order_id: razorpayOrder.id,
+        handler: async function (response) {
+          const verified = await verifyRazorpaySignature({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          });
 
-            const finalOrder = {
-              ...baseOrderData,
-              paymentMethod: 'Online Payment',
-              paymentId: response.razorpay_payment_id,
-            };
+          if (!verified) {
+            toast.error('Payment verification failed.');
+            return;
+          }
 
-            const result = await axios.post(`${API_BASE}/orders/create`, finalOrder);
-            if (result.data.success) {
-              await clearCart();
-              navigate('/orders', { state: { orderId: result.data.orderId } });
-            } else {
-              toast.error('Order creation failed after payment.');
-            }
-          },
-          prefill: {
-            name: formData.name,
-            email: formData.email,
-            contact: formData.phone,
-          },
-          theme: { color: '#3399cc' },
-        };
+          const finalOrder = {
+            ...baseOrderData,
+            paymentMethod: 'Online Payment',
+            paymentId: response.razorpay_payment_id,
+          };
 
-        const rzp = new window.Razorpay(options);
-        rzp.on('payment.failed', function (res) {
-          toast.error(`Payment failed: ${res.error.description || 'Try again'}`);
-        });
+          const result = await axios.post(`${API_BASE}/orders`, finalOrder); // fixed endpoint
+          if (result.data.success) {
+            await clearCart();
+            toast.success('Order placed successfully!');
+            navigate('/orders', { state: { orderId: result.data.orderId } });
+          } else {
+            toast.error('Order creation failed after payment.');
+          }
+        },
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        theme: { color: '#3399cc' },
+      };
 
-        rzp.open();
-      } catch (err) {
-        toast(err.message || 'Payment error. Try again.');
-      } finally {
-        setIsPlacingOrder(false);
-      }
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (res) {
+        toast.error(`Payment failed: ${res.error.description || 'Try again'}`);
+      });
+
+      rzp.open();
+    } catch (err) {
+      toast.error(err.message || 'Payment error. Try again.');
+    } finally {
+      setIsPlacingOrder(false);
     }
   };
 
   return (
     <Container className="mt-4 pb-5">
       <h2>Checkout</h2>
-      <ToastContainer   autoClose={2000} />
+      <ToastContainer autoClose={2000} />
       <Row>
         <Col md={6} className="p-4 shadow-sm bg-white">
           <Form>
@@ -251,7 +255,12 @@ const CheckoutPage = () => {
                 <option>Online Payment</option>
               </Form.Select>
             </Form.Group>
-            <Button className="w-100 py-2" variant="primary" onClick={handlePlaceOrder} disabled={isPlacingOrder}>
+            <Button
+              className="w-100 py-2"
+              variant="primary"
+              onClick={handlePlaceOrder}
+              disabled={isPlacingOrder}
+            >
               {isPlacingOrder ? 'Processing...' : 'Place Order'}
             </Button>
           </Form>

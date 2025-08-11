@@ -65,7 +65,7 @@ const router = [
     element: SearchResults,
   },
    {
-    path: '/order-confirmatio', 
+    path: '/orders', 
     name: 'orders',
     element: Orders,
   },
